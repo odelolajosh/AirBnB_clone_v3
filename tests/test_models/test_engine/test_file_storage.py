@@ -3,7 +3,6 @@
 Contains the TestFileStorageDocs classes
 """
 
-from datetime import datetime
 import inspect
 import models
 from models.engine import file_storage
@@ -15,9 +14,10 @@ from models.review import Review
 from models.state import State
 from models.user import User
 import json
-import os
 import pep8
 import unittest
+from random import randint
+
 FileStorage = file_storage.FileStorage
 classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
@@ -70,7 +70,11 @@ test_file_storage.py'])
 
 class TestFileStorage(unittest.TestCase):
     """Test the FileStorage class"""
-    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+
+    def setUp(self):
+        if models.storage_t == 'db':  # skip the whole TestCase in db mode
+            self.skipTest("not testing file storage")
+
     def test_all_returns_dict(self):
         """Test that all returns the FileStorage.__objects attr"""
         storage = FileStorage()
@@ -78,7 +82,6 @@ class TestFileStorage(unittest.TestCase):
         self.assertEqual(type(new_dict), dict)
         self.assertIs(new_dict, storage._FileStorage__objects)
 
-    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
     def test_new(self):
         """test that new adds an object to the FileStorage.__objects attr"""
         storage = FileStorage()
@@ -94,7 +97,6 @@ class TestFileStorage(unittest.TestCase):
                 self.assertEqual(test_dict, storage._FileStorage__objects)
         FileStorage._FileStorage__objects = save
 
-    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
         storage = FileStorage()
@@ -113,3 +115,38 @@ class TestFileStorage(unittest.TestCase):
         with open("file.json", "r") as f:
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
+
+    def test_get(self):
+        """Test that the engine gets the correct object from storage"""
+        storage = FileStorage()
+        all = storage.all()
+        rand_index = randint(0, len(all) - 1)
+        expected_inst = list(all.values())[rand_index]  # get random instance
+        actual_inst = storage.get(expected_inst.__class__, expected_inst.id)
+        self.assertIs(expected_inst, actual_inst)
+
+    def test_get_none(self):
+        """Test that the engine returns None if object not found"""
+        storage = FileStorage()
+        self.assertIsNone(storage.get("State", "123456789"))
+
+    def test_count(self):
+        """Test that the count method return correct value"""
+        storage = FileStorage()
+        all = storage.all()
+        for cls in classes.values():
+            msg = "Test count for {}".format(cls)
+            with self.subTest(msg, cls=cls):
+                filtered = [obj for obj in all.values()
+                            if obj.__class__ == cls]
+                self.assertEqual(storage.count(cls), len(filtered))
+
+    def test_count_all(self):
+        """Test that the count method return correct value"""
+        storage = FileStorage()
+        self.assertEqual(storage.count(), len(storage.all()))
+
+    def test_count_none(self):
+        """Test that the count method return correct value"""
+        storage = FileStorage()
+        self.assertEqual(storage.count(None), len(storage.all()))
