@@ -1,17 +1,21 @@
 #!/usr/bin/python3
 """ handles all CRUD for cities """
 
-from email.policy import strict
 from api.v1.views import app_views
-from flask import jsonify
+from flask import jsonify, abort
 from models import storage
+from models.state import State
 
 
-@app_views.route("/states/<state_id>/cities", strict_slashes=False, methods=["GET"])
+@app_views.route("/states/<state_id>/cities",
+                 strict_slashes=False, methods=["GET"])
 def get_cities(state_id):
     """ returns all cities """
-    cities = storage.all("City")
-    return jsonify([city.to_dict() for city in cities.values()])
+    state: State = storage.get("State", state_id)
+    if state is None:
+        abort(404)
+    return jsonify([city.to_dict() for city in state.cities])
+
 
 @app_views.route("/cities/<city_id>", strict_slashes=False, methods=["GET"])
 def get_city(city_id):
