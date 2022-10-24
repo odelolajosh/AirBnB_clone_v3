@@ -7,16 +7,15 @@ from flask import jsonify
 from models import storage
 
 
-@app_views.route("/", strict_slashes=False, methods=["GET"])
-def get_cities():
-    """ return all cities """
+@app_views.route("/states/<state_id>/cities", strict_slashes=False, methods=["GET"])
+def get_cities(state_id):
+    """ returns all cities """
     cities = storage.all("City")
     return jsonify([city.to_dict() for city in cities.values()])
 
-
 @app_views.route("/cities/<city_id>", strict_slashes=False, methods=["GET"])
 def get_city(city_id):
-    """ return a city by id """
+    """ returns a city """
     city = storage.get("City", city_id)
     if city is None:
         abort(404)
