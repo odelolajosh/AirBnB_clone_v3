@@ -11,7 +11,7 @@ from models.state import State
                  strict_slashes=False, methods=["GET"])
 def get_cities(state_id):
     """ returns all cities """
-    state: State = storage.get("State", state_id)
+    state = storage.get("State", state_id)
     if state is None:
         abort(404)
     return jsonify([city.to_dict() for city in state.cities])
