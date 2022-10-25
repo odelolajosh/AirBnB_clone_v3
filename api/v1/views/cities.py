@@ -6,6 +6,7 @@ from flask import jsonify, abort, request
 from models import storage
 from models.city import City
 
+
 @app_views.route("/states/<state_id>/cities",
                  strict_slashes=False, methods=["GET"])
 def get_cities(state_id):
