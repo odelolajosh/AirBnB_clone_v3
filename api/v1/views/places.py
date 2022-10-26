@@ -73,5 +73,5 @@ def update_place(place_id):
     for key, value in request.get_json().items():
         if key not in ["id", "user_id", "city_id", "created_at", "updated_at"]:
             setattr(place, key, value)
-    storage.save(place)
+    storage.save()
     return jsonify(place.to_dict()), 200
