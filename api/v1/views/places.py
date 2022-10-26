@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""handle CRUD for places"""
+"""handles all CRUD RestFul API actions for places"""
 
 from api.v1.views import app_views
 from flask import jsonify, request, abort
