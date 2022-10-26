@@ -13,7 +13,7 @@ from models.user import User
                  strict_slashes=False,
                  methods=["GET"])
 def get_places(city_id):
-    """ returns all places in the city """
+    """returns all places in the city"""
     city: City = storage.get("City", city_id)
     if not city:
         abort(404)
@@ -22,7 +22,7 @@ def get_places(city_id):
 
 @app_views.route("/places/<place_id>", strict_slashes=False, methods=["GET"])
 def get_place(place_id):
-    """ returns a place """
+    """returns a place"""
     place: Place = storage.get("Place", place_id)
     if not place:
         abort(404)
@@ -31,7 +31,7 @@ def get_place(place_id):
 
 @app_views.route("places/<place_id>", strict_slashes=False, methods=["DELETE"])
 def delete_place(place_id):
-    """ deletes a place """
+    """deletes a place"""
     place: Place = storage.get("Place", place_id)
     if not place:
         abort(404)
@@ -44,7 +44,7 @@ def delete_place(place_id):
                  strict_slashes=False,
                  methods=["POST"])
 def create_place(city_id):
-    """ creates a place """
+    """creates a place"""
     city: City = storage.get("City", city_id)
     if not city:
         abort(404)
@@ -65,7 +65,7 @@ def create_place(city_id):
 
 @app_views.route("/places/<place_id>", strict_slashes=False, methods=["PUT"])
 def update_place(place_id):
-    """ update a place """
+    """update a place"""
     place: Place = storage.get("Place", place_id)
     if not place:
         abort(404)
