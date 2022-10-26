@@ -44,6 +44,7 @@ def delete_place(place_id):
                  strict_slashes=False,
                  methods=["POST"])
 def create_place(city_id):
+    """ creates a place """
     city: City = storage.get("City", city_id)
     if not city:
         abort(404)
