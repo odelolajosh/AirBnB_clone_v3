@@ -46,9 +46,9 @@ def create_place(city_id):
     city = storage.get("City", city_id)
     if not city:
         abort(404)
-    if not request.json():
+    if not request.get_json():
         abort(400, "Not a JSON")
-    payload = request.json()
+    payload = request.get_json()
     if "user_id" not in payload:
         abort(400, "Missing user_id")
     user = storage.get("User", payload["user_id"])
@@ -67,9 +67,9 @@ def update_place(place_id):
     place = storage.get("Place", place_id)
     if not place:
         abort(404)
-    if not request.json():
+    if not request.get_json():
         abort(400, "Not a JSON")
-    for key, value in request.json().items():
+    for key, value in request.get_json().items():
         if key not in ["id", "user_id", "city_id", "created_at", "updated_at"]:
             setattr(place, key, value)
     storage.save(place)
