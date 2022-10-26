@@ -51,7 +51,7 @@ def create_place(city_id):
     payload = request.json()
     if "user_id" not in payload:
         abort(400, "Missing user_id")
-    user = storage.get("User", payload)
+    user = storage.get("User", payload["user_id"])
     if not user:
         abort(404)
     if "name" not in payload:
